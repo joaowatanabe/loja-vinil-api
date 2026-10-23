@@ -8,7 +8,8 @@
     "swagger": "npx tsx swagger.ts",
     "postinstall": "prisma generate",
     "seed": "prisma db seed",
-    "reset": "prisma migrate reset --force"
+    "reset": "prisma migrate reset --force",
+    "test": "tsx --test tests/api.test.ts"
   },
   "keywords": [],
   "author": "",

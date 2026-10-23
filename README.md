@@ -166,10 +166,10 @@ Regras de negócio dentro de transações usam a classe `ErroApi(status, mensage
 
 ## 6. Como rodar
 
-**Pré-requisitos:** Node.js 20+, MySQL 8 rodando localmente, conta gratuita no [Mailtrap](https://mailtrap.io) (Email Testing / sandbox) e o app [Bruno](https://www.usebruno.com).
+**Pré-requisitos:** Node.js 20.19+ (testado no 24), MySQL 8 rodando localmente, conta gratuita no [Mailtrap](https://mailtrap.io) (Email Testing / sandbox) e o app [Bruno](https://www.usebruno.com).
 
 ```bash
-# 1. dependências
+# 1. dependências (o postinstall já roda `prisma generate`)
 npm install
 ```
 
@@ -191,7 +191,7 @@ SMTP_PASS="sua_senha_mailtrap"
 > `DATABASE_URL` é usada pelo Prisma CLI (migrations/seed); as demais variáveis são usadas pelo adapter MariaDB em `lib/prisma.ts`.
 
 ```bash
-# 3. cria o banco/tabelas e gera o client do Prisma (generated/prisma)
+# 3. cria o banco e aplica a migration (prisma/migrations)
 npx prisma migrate dev
 
 # 4. popula com 4 gêneros, 6 discos e 3 clientes
@@ -202,6 +202,13 @@ npm run swagger
 
 # 6. sobe a API em modo watch
 npm run dev
+```
+
+**Testes automatizados** (33 testes com `node:test` + `fetch`, API rodando em outro terminal):
+
+```bash
+npm run reset   # recria o banco e roda o seed (apaga tudo!)
+npm test
 ```
 
 Abra **http://localhost:3000/docs** para a documentação. A API responde em `http://localhost:3000`.
