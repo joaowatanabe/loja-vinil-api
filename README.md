@@ -157,7 +157,7 @@ sequenceDiagram
 | POST | `/clientes` | Cria cliente | 201, 400, 409 (e-mail repetido) |
 | PUT | `/clientes/:id` | Atualiza cliente | 200, 400, 404, 409 |
 | DELETE | `/clientes/:id` | Exclui cliente | 200, 400, 404, 409 (tem compras) |
-| GET | `/clientes/email/:id` | Envia por e-mail o histórico de compras | 200, 400, 404, 500 (falha SMTP) |
+| GET | `/clientes/email/:id` | Envia por e-mail o histórico de compras | 200, 400, 404, 502 (servidor SMTP recusou) |
 | GET | `/vendas` | Lista vendas (com cliente e disco), mais recentes primeiro | 200 |
 | POST | `/vendas` | **Transação:** registra venda | 201, 400, 404 |
 | DELETE | `/vendas/:id` | **Transação:** estorna venda | 200, 400, 404 |
@@ -174,6 +174,7 @@ Centralizado em `lib/erros.ts` (função `trataErro`):
 | **400** | Validação Zod falhou, `:id` inválido ou estoque insuficiente | `{ "erros": [{ "campo": "quant", "mensagem": "Quantidade deve ser positiva" }] }` ou `{ "erro": "..." }` |
 | **404** | Registro, cliente, disco ou venda não encontrado (inclui Prisma `P2025`) | `{ "erro": "Disco não cadastrado" }` |
 | **409** | Conflito: valor único repetido (`P2002`, ex.: e-mail) ou chave estrangeira (`P2003`, ex.: excluir gênero com discos) | `{ "erro": "..." }` |
+| **502** | O servidor de e-mail (SMTP) recusou o envio — ex.: o Mailtrap grátis aceita no máximo ~1 e-mail por segundo | `{ "erro": "Falha ao enviar o e-mail: 550 5.7.0 Too many emails per second..." }` |
 | **500** | Somente erros **inesperados** (logados no console) | `{ "erro": "Erro interno do servidor" }` |
 
 Regras de negócio dentro de transações usam a classe `ErroApi(status, mensagem)`: ao ser lançada, faz o ROLLBACK e já carrega o status HTTP correto.
