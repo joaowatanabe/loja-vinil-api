@@ -1,0 +1,23 @@
+meta {
+  name: Alterar gênero
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/generos/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "House Music"
+  }
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

@@ -1,0 +1,17 @@
+meta {
+  name: 8. Estornar venda
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/vendas/{{vendaId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

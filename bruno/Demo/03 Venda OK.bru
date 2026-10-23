@@ -1,0 +1,29 @@
+meta {
+  name: 3. Venda OK
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/vendas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "clienteId": 2,
+    "discoId": 3,
+    "quant": 1
+  }
+}
+
+script:post-response {
+  bru.setVar("vendaId", res.body.venda.id);
+}
+
+tests {
+  test("status 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Incluir cliente
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/clientes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "Diego Alves",
+    "email": "diego@email.com"
+  }
+}
+
+tests {
+  test("status 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

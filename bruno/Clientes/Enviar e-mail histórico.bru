@@ -1,0 +1,17 @@
+meta {
+  name: Enviar e-mail histórico
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/clientes/email/1
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}
