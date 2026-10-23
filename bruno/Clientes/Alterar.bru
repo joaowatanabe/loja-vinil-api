@@ -5,15 +5,15 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/clientes/1
+  url: {{baseUrl}}/clientes/{{clienteId}}
   body: json
   auth: none
 }
 
 body:json {
   {
-    "nome": "Ana Souza",
-    "email": "ana@email.com"
+    "nome": "Diego Alves Jr {{sufixo}}",
+    "email": "diego.jr{{sufixo}}@email.com"
   }
 }
 
