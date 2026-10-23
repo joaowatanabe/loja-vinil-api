@@ -228,21 +228,57 @@ npm run reset   # recria o banco e roda o seed (apaga tudo!)
 npm test
 ```
 
+> **Prisma 7:** o `migrate reset` não roda mais o seed sozinho, por isso o script `reset` é `prisma migrate reset --force && prisma db seed`. Rodar só `npx prisma db seed` de novo recria os dados, mas **não volta os ids para 1** (o auto-increment continua), e a pasta Demo do Bruno depende desses ids. Para voltar ao estado inicial, use sempre `npm run reset`.
+
 Abra **http://localhost:3000/docs** para a documentação. A API responde em `http://localhost:3000`.
 
-**Bruno:** abra a pasta `bruno/` pelo app (*Open Collection*) e execute as requisições.
+### Coleção do Bruno (34 requisições)
+
+Abra a pasta `bruno/` pelo app (*Open Collection*) e selecione o environment **Local** (`baseUrl = http://localhost:3000`). Se o Bruno mostrar `ECONNREFUSED`, a API não está rodando: deixe o `npm run dev` aberto em um terminal.
+
+| Pasta | O que tem |
+|---|---|
+| `Generos`, `Discos`, `Clientes` | CRUD **autocontido**: o *Incluir* cria um registro com sufixo único e guarda o id (`bru.setVar`), e *Buscar*, *Alterar* e *Excluir* usam **esse** registro. No fim, requisições **409 de propósito**: gênero repetido e exclusão de gênero/disco/cliente em uso. |
+| `Clientes` | Também *Enviar e-mail histórico*. |
+| `Vendas` | Listar, incluir e estornar (usa o id da venda criada). |
+| `Demo` | Roteiro da apresentação, de 01 a 11 (ver seção 7). Termina com o estorno, então pode ser rodada de novo. |
+
+O Mailtrap grátis recusa e-mails muito seguidos (`550 Too many emails per second`, e a API devolve 502). Por isso as requisições de e-mail só esperam se outro e-mail saiu há menos de 11 s. Um envio isolado sai na hora.
+
+A coleção inteira também roda pelo terminal (34/34):
+
+```bash
+cd bruno && npx @usebruno/cli run --env Local -r
+```
 
 ---
 
 ## 7. Roteiro de demonstração
 
-1. **Diagrama E-R** — mostrar a seção 2 e explicar as relações 1:N.
-2. **CRUD rápido (Bruno)** — criar um gênero, listar discos, tentar excluir um gênero em uso (409).
-3. **Venda** — `GET /discos` e `GET /clientes` anotando `estoque` e `totalGasto`; `POST /vendas`; consultar de novo e mostrar estoque menor e total gasto maior.
-4. **Venda sem estoque** — o disco **"Singularity"** tem **estoque 1** no seed: vender 1 (ok) e tentar de novo (ou pedir `quant: 2`) → **400**; conferir que nada mudou no estoque nem no total.
-5. **Estorno** — `DELETE /vendas/:id` e mostrar estoque e total gasto voltando ao valor anterior.
-6. **E-mail** — `GET /clientes/email/:id` e abrir a caixa do **Mailtrap** para mostrar a tabela com o histórico.
-7. **Swagger** — em `/docs`, abrir `POST /vendas`, mostrar descrição/exemplos e usar **Try it out**.
+**Antes de começar:** MySQL ligado → `npm run reset` → `npm run dev` (deixar aberto) → Bruno com o environment **Local** → abas abertas: caixa do Mailtrap, `http://localhost:3000/docs` e o repositório no GitHub.
+
+1. **Diagrama E-R:** mostrar a seção 2 e explicar as relações 1:N.
+2. **CRUD rápido (Bruno, pasta `Generos`):** *Incluir gênero* (201), *Incluir gênero repetido* (409) e *Excluir gênero em uso* (409), para mostrar o tratamento de erros.
+3. **Pasta `Demo`, uma requisição por vez:**
+
+| # | Requisição | O que aparece |
+|---|---|---|
+| 01 | Ver disco 3 | Singularity com `estoque: 1` |
+| 02 | Ver cliente 2 | `totalGasto` antes da venda |
+| 03 | Venda OK | **201** com a venda, o disco (`estoque: 0`) e o cliente com o total maior |
+| 04 | Ver disco 3 de novo | `estoque: 0` |
+| 05 | Venda sem estoque | **400** "Estoque insuficiente" (ROLLBACK, nada muda) |
+| 06 | Ver cliente 2 | `totalGasto` só com a venda que deu certo |
+| 07 | Listar vendas | a venda nova no topo |
+| 08 | Estornar venda | **200**, estoque devolvido e total abatido (transação) |
+| 09 | Ver disco 3 | `estoque: 1` de novo |
+| 10 | Validação Zod | **400** com `{ erros: [{ campo, mensagem }] }` |
+| 11 | Enviar e-mail | **200**; abrir o Mailtrap e mostrar a tabela de compras |
+
+4. **Swagger:** em `/docs`, abrir `POST /vendas`, mostrar a descrição e os exemplos e usar **Try it out**.
+5. **GitHub:** uma branch e um PR por item do enunciado, mais os testes (33 e2e e Bruno 34/34).
+
+Se der errado: `ECONNREFUSED` → `npm run dev`; 404 em tudo ou a Demo 05 não dá 400 → `npm run reset`; e-mail **502** → esperar ~10 s e reenviar.
 
 ---
 
@@ -285,6 +321,14 @@ loja-vinil-api/
 | #4 | `feat/swagger` | Item 6: documentação Swagger |
 | #5 | `docs/readme-bruno` | README e coleção do Bruno |
 | #6 | `test/e2e` | 33 testes end-to-end |
+
+Depois disso, cada correção também virou branch + PR a partir da `main`:
+
+| PR | Branch | Conteúdo |
+|---|---|---|
+| #7 | `fix/reset-seed` | `npm run reset` passa a rodar o seed (Prisma 7) |
+| #8 | `feat/seed-rico` | Seed com 10 gêneros, 32 discos, 14 clientes e 26 vendas |
+| #9 | `fix/bruno-demo-email` | E-mail devolve 502 quando o SMTP recusa; coleção do Bruno autocontida (34/34) |
 
 ---
 
