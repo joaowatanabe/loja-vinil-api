@@ -83,9 +83,9 @@ Exemplo de resposta (**201**) com o seed recém-carregado:
 
 ```json
 {
-  "venda":   { "id": 1, "clienteId": 1, "discoId": 1, "quant": 1, "preco": "249.9", "data": "2026-10-23T18:46:29.736Z" },
+  "venda":   { "id": 27, "clienteId": 1, "discoId": 1, "quant": 1, "preco": "249.9", "data": "2026-10-23T18:46:29.736Z" },
   "disco":   { "id": 1, "titulo": "Discovery", "estoque": 4 },
-  "cliente": { "id": 1, "nome": "Ana Souza", "email": "ana@email.com", "totalGasto": "249.9" }
+  "cliente": { "id": 1, "nome": "Ana Souza", "email": "ana@email.com", "totalGasto": "739.7" }
 }
 ```
 
@@ -210,7 +210,7 @@ SMTP_PASS="sua_senha_mailtrap"
 # 3. cria o banco e aplica a migration (prisma/migrations)
 npx prisma migrate dev
 
-# 4. popula com 4 gêneros, 6 discos e 3 clientes
+# 4. popula com 10 gêneros, 32 discos, 14 clientes e 26 vendas
 npx prisma db seed
 
 # 5. gera o swagger-output.json
