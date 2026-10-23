@@ -4,7 +4,7 @@ API REST para gerenciar uma loja de discos de vinil: **gêneros**, **discos**, *
 
 Trabalho #2 de *Desenvolvimento de Serviços e APIs* — SENAC, ADS, 3º semestre. Prof. Edécio Fernando Iepsen. Trabalho individual, apresentado em 23/10/2026.
 
-**Stack:** Node.js + TypeScript (tsx) · Express 5 · Prisma 7 (gerador `prisma-client`, adapter MariaDB) · MySQL 8 · Zod 4 · Nodemailer + Mailtrap (sandbox) · swagger-autogen + swagger-ui-express · testes no Bruno.
+**Stack:** Node.js + TypeScript (tsx) · Express 5 · Prisma 7 (gerador `prisma-client`, adapter MariaDB) · MySQL 8 · Zod 4 · Nodemailer + Mailtrap (sandbox) · swagger-autogen + swagger-ui-express · testes manuais no Bruno e 33 testes automatizados com `node:test`.
 
 ---
 
@@ -78,6 +78,22 @@ Corpo: `{ "clienteId": 1, "discoId": 2, "quant": 1 }`. Tudo roda dentro de um `p
 4. **Incrementa** `cliente.totalGasto` em `preco × quant`.
 
 Qualquer erro lançado dentro da transação causa **ROLLBACK**: nada do que foi feito antes permanece no banco.
+
+Exemplo de resposta (**201**) com o seed recém-carregado:
+
+```json
+{
+  "venda":   { "id": 1, "clienteId": 1, "discoId": 1, "quant": 1, "preco": "249.9", "data": "2026-10-23T18:46:29.736Z" },
+  "disco":   { "id": 1, "titulo": "Discovery", "estoque": 4 },
+  "cliente": { "id": 1, "nome": "Ana Souza", "email": "ana@email.com", "totalGasto": "249.9" }
+}
+```
+
+Repetindo a venda de um disco sem estoque, a resposta é **400** e nenhuma tabela muda:
+
+```json
+{ "erro": "Estoque insuficiente: há apenas 0 cópia(s) de Singularity" }
+```
 
 ### `DELETE /vendas/:id` — estornar venda
 
@@ -166,10 +182,10 @@ Regras de negócio dentro de transações usam a classe `ErroApi(status, mensage
 
 ## 6. Como rodar
 
-**Pré-requisitos:** Node.js 20+, MySQL 8 rodando localmente, conta gratuita no [Mailtrap](https://mailtrap.io) (Email Testing / sandbox) e o app [Bruno](https://www.usebruno.com).
+**Pré-requisitos:** Node.js 20.19+ (testado no 24), MySQL 8 rodando localmente, conta gratuita no [Mailtrap](https://mailtrap.io) (Email Testing / sandbox) e o app [Bruno](https://www.usebruno.com).
 
 ```bash
-# 1. dependências
+# 1. dependências (o postinstall já roda `prisma generate`)
 npm install
 ```
 
@@ -191,7 +207,7 @@ SMTP_PASS="sua_senha_mailtrap"
 > `DATABASE_URL` é usada pelo Prisma CLI (migrations/seed); as demais variáveis são usadas pelo adapter MariaDB em `lib/prisma.ts`.
 
 ```bash
-# 3. cria o banco/tabelas e gera o client do Prisma (generated/prisma)
+# 3. cria o banco e aplica a migration (prisma/migrations)
 npx prisma migrate dev
 
 # 4. popula com 4 gêneros, 6 discos e 3 clientes
@@ -202,6 +218,13 @@ npm run swagger
 
 # 6. sobe a API em modo watch
 npm run dev
+```
+
+**Testes automatizados** (33 testes com `node:test` + `fetch`, API rodando em outro terminal):
+
+```bash
+npm run reset   # recria o banco e roda o seed (apaga tudo!)
+npm test
 ```
 
 Abra **http://localhost:3000/docs** para a documentação. A API responde em `http://localhost:3000`.
@@ -238,8 +261,11 @@ loja-vinil-api/
 ├── src/
 │   ├── server.ts           # app Express, rotas e /docs
 │   └── routes/             # generos.ts, discos.ts, clientes.ts, vendas.ts
+├── tests/
+│   └── api.test.ts         # 33 testes end-to-end (node:test + fetch)
 ├── prisma.config.ts        # config do Prisma 7 (schema, migrations, seed)
 ├── swagger.ts              # gerador do swagger-output.json
+├── swagger-output.json     # documentação OpenAPI gerada (servida em /docs)
 ├── .env                    # variáveis locais (fora do Git)
 └── package.json
 ```
@@ -248,13 +274,16 @@ loja-vinil-api/
 
 ## 9. Fluxo de Git
 
-`main` contém a versão final. O trabalho foi desenvolvido em branches por tema, integradas via Pull Request:
+`main` contém a versão final. O trabalho foi desenvolvido em uma branch por item do enunciado, cada uma integrada via Pull Request (na ordem abaixo, já que cada branch parte da anterior):
 
-- `feat/schema-crud` — projeto, schema, migration, seed e CRUD básico
-- `feat/transacao-vendas` — inclusão, listagem e estorno de vendas com transação
-- `feat/email` — rota de e-mail com histórico de compras
-- `feat/swagger` — documentação Swagger
-- `docs/readme-bruno` — README e coleção do Bruno
+| PR | Branch | Conteúdo |
+|---|---|---|
+| #1 | `feat/schema-crud` | Itens 1 e 2: schema, migration, seed e CRUD básico |
+| #2 | `feat/transacao-vendas` | Itens 3 e 4: inclusão, listagem e estorno de vendas com transação |
+| #3 | `feat/email` | Item 5: rota de e-mail com histórico de compras |
+| #4 | `feat/swagger` | Item 6: documentação Swagger |
+| #5 | `docs/readme-bruno` | README e coleção do Bruno |
+| #6 | `test/e2e` | 33 testes end-to-end |
 
 ---
 
