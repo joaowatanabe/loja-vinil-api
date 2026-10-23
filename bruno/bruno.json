@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Loja de Discos de Vinil",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

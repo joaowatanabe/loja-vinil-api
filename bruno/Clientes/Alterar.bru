@@ -1,0 +1,24 @@
+meta {
+  name: Alterar cliente
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/clientes/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "Ana Souza",
+    "email": "ana@email.com"
+  }
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

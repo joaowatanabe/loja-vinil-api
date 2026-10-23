@@ -1,0 +1,17 @@
+meta {
+  name: 1. Ver disco 3 (estoque 1)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/discos/3
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

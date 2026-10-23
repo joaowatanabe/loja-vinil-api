@@ -1,0 +1,28 @@
+meta {
+  name: Incluir disco
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/discos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titulo": "Kind of Blue",
+    "artista": "Miles Davis",
+    "ano": 1959,
+    "preco": 229.9,
+    "estoque": 3,
+    "generoId": 1
+  }
+}
+
+tests {
+  test("status 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

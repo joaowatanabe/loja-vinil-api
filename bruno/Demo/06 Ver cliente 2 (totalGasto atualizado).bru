@@ -1,0 +1,17 @@
+meta {
+  name: 6. Ver cliente 2 (totalGasto atualizado)
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/clientes/2
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

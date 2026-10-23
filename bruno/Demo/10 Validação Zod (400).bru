@@ -1,0 +1,24 @@
+meta {
+  name: 10. Validação Zod (400)
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/vendas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "clienteId": "x",
+    "quant": -1
+  }
+}
+
+tests {
+  test("status 400", function () {
+    expect(res.status).to.equal(400);
+  });
+}

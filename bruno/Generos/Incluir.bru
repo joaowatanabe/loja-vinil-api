@@ -1,0 +1,23 @@
+meta {
+  name: Incluir gênero
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/generos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "Jazz"
+  }
+}
+
+tests {
+  test("status 201", function () {
+    expect(res.status).to.equal(201);
+  });
+}

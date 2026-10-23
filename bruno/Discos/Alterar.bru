@@ -1,0 +1,28 @@
+meta {
+  name: Alterar disco
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/discos/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "titulo": "Discovery",
+    "artista": "Daft Punk",
+    "ano": 2001,
+    "preco": 259.9,
+    "estoque": 5,
+    "generoId": 1
+  }
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

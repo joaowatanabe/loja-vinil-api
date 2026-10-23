@@ -1,0 +1,17 @@
+meta {
+  name: Listar discos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/discos
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}

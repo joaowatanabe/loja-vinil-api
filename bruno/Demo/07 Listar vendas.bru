@@ -1,0 +1,17 @@
+meta {
+  name: 7. Listar vendas
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/vendas
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 200", function () {
+    expect(res.status).to.equal(200);
+  });
+}
