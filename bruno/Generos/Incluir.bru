@@ -1,7 +1,7 @@
 meta {
   name: Incluir gênero
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
@@ -12,8 +12,16 @@ post {
 
 body:json {
   {
-    "nome": "Jazz"
+    "nome": "Jazz {{sufixo}}"
   }
+}
+
+script:pre-request {
+  bru.setVar("sufixo", Date.now().toString().slice(-6));
+}
+
+script:post-response {
+  bru.setVar("generoId", res.body.id);
 }
 
 tests {

@@ -1,0 +1,17 @@
+meta {
+  name: Excluir disco com vendas (409)
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/discos/2
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 409", function () {
+    expect(res.status).to.equal(409);
+  });
+}

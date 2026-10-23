@@ -1,0 +1,17 @@
+meta {
+  name: Excluir gênero em uso (409)
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/generos/1
+  body: none
+  auth: none
+}
+
+tests {
+  test("status 409", function () {
+    expect(res.status).to.equal(409);
+  });
+}

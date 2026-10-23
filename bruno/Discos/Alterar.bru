@@ -5,16 +5,16 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/discos/1
+  url: {{baseUrl}}/discos/{{discoId}}
   body: json
   auth: none
 }
 
 body:json {
   {
-    "titulo": "Discovery",
-    "artista": "Daft Punk",
-    "ano": 2001,
+    "titulo": "Kind of Blue (remaster) {{sufixo}}",
+    "artista": "Miles Davis",
+    "ano": 1959,
     "preco": 259.9,
     "estoque": 5,
     "generoId": 1

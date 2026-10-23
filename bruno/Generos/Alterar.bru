@@ -5,14 +5,14 @@ meta {
 }
 
 put {
-  url: {{baseUrl}}/generos/1
+  url: {{baseUrl}}/generos/{{generoId}}
   body: json
   auth: none
 }
 
 body:json {
   {
-    "nome": "House Music"
+    "nome": "Jazz Fusion {{sufixo}}"
   }
 }
 

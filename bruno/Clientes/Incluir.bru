@@ -1,7 +1,7 @@
 meta {
   name: Incluir cliente
   type: http
-  seq: 3
+  seq: 2
 }
 
 post {
@@ -12,9 +12,17 @@ post {
 
 body:json {
   {
-    "nome": "Diego Alves",
-    "email": "diego@email.com"
+    "nome": "Diego Alves {{sufixo}}",
+    "email": "diego{{sufixo}}@email.com"
   }
+}
+
+script:pre-request {
+  bru.setVar("sufixo", Date.now().toString().slice(-6));
+}
+
+script:post-response {
+  bru.setVar("clienteId", res.body.id);
 }
 
 tests {

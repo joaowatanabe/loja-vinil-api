@@ -18,6 +18,10 @@ body:json {
   }
 }
 
+script:post-response {
+  bru.setVar("vendaCrudId", res.body.venda.id);
+}
+
 tests {
   test("status 201", function () {
     expect(res.status).to.equal(201);

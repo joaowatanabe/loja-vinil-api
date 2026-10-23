@@ -1,0 +1,23 @@
+meta {
+  name: Incluir gênero repetido (409)
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/generos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nome": "House"
+  }
+}
+
+tests {
+  test("status 409", function () {
+    expect(res.status).to.equal(409);
+  });
+}

@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma"
-import { errosZod, idValido, trataErro } from "../../lib/erros"
+import { ErroApi, errosZod, idValido, trataErro } from "../../lib/erros"
 import { Router } from "express"
 import { z } from "zod"
 import nodemailer from "nodemailer"
@@ -205,12 +205,16 @@ router.get("/email/:id", async (req, res) => {
       return
     }
 
+    // Falha do servidor SMTP não é erro da API: devolve 502 (Bad Gateway) com o motivo.
+    // Ex.: o sandbox grátis do Mailtrap recusa mais de 1 e-mail por segundo (550 Too many emails per second)
     const info = await transporter.sendMail({
       from: "Loja de Discos de Vinil <loja@vinil.com>",
       to: cliente.email,
       subject: "Seu histórico de compras - Loja de Discos de Vinil",
       text: `Olá, ${cliente.nome}! Você tem ${cliente.vendas.length} compra(s) registrada(s).`,
       html: gerarTabelaHTML(cliente),
+    }).catch((erro: { response?: string, message: string }) => {
+      throw new ErroApi(502, `Falha ao enviar o e-mail: ${erro.response ?? erro.message}`)
     })
 
     res.status(200).json({ mensagem: `E-mail enviado para ${cliente.email}`, id: info.messageId })

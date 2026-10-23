@@ -10,6 +10,18 @@ get {
   auth: none
 }
 
+script:pre-request {
+  // O Mailtrap grátis recusa e-mails muito seguidos (502 "Too many emails per second").
+  // Só espera se outro e-mail saiu há menos de 11 s; na apresentação, envio único = sem espera.
+  const ultimo = Number(bru.getVar("ultimoEmail") || 0);
+  const espera = Math.max(0, 11000 - (Date.now() - ultimo));
+  if (espera > 0) await new Promise(r => setTimeout(r, espera));
+}
+
+script:post-response {
+  bru.setVar("ultimoEmail", Date.now());
+}
+
 tests {
   test("status 200", function () {
     expect(res.status).to.equal(200);
